@@ -3,9 +3,9 @@ import http.client, urllib
 from yeelight import Bulb
 
 # BULB TESTING
-new_bulb = Bulb("192.168.1.64")
+new_bulb = Bulb("BULB_IP")
 new_bulb.turn_off()
-quit(1)
+new_bulb.turn_on()
 thunder = ThunderHead("DEXCOMUSER", "DEXCOMPASS", change = -30, low = 60, high = 275)
 try:
     thunder.watch_efficient()
