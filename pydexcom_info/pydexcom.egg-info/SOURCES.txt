@@ -1,0 +1,12 @@
+README.md
+setup.cfg
+setup.py
+pydexcom/__init__.py
+pydexcom/const.py
+pydexcom/errors.py
+pydexcom.egg-info/PKG-INFO
+pydexcom.egg-info/SOURCES.txt
+pydexcom.egg-info/dependency_links.txt
+pydexcom.egg-info/requires.txt
+pydexcom.egg-info/top_level.txt
+pydexcom.egg-info/zip-safe

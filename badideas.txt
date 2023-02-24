@@ -1,0 +1,90 @@
+
+
+# Here's the workflow...
+# Go to this website: https://api.dexcom.com/v2/oauth2/login?client_id=hsOlzVkz9o18qgCxe6Gji6HEryLOUrpF&redirect_uri=http://localhost:8080/&response_type=code&scope=offline_access
+# Log in using your DEXCOM credentials
+# Once you log in, you'll get an error page. DO NOT NAVIGATE AWAY FROM THIS PAGE!!!
+# From the error page URL you'll see at the end something like: code=e1782f6c49e9e3b7a09f66c98970186b
+# Set the code variable to that string
+# Run the first block of code
+# From that result, grab the access code and refresh token
+import http.client
+import datetime
+from urllib import request
+
+def subtractFiveMins(cur_min, cur_hour):
+    if cur_min < 5:
+        to_subtract = 5 - cur_min
+        new_min = 60 - to_subtract
+        new_hour = cur_hour - 1
+        return new_min, new_hour
+    else:
+        new_min = cur_min - 5
+        return new_min, cur_hour
+
+
+
+def getCurrentBloodSugar(access_tok):
+    conn = http.client.HTTPSConnection("api.dexcom.com")
+
+    headers = {
+        'authorization': f"Bearer {access_tok}"
+        }
+
+    cur_time = datetime.datetime.today()
+    date = cur_time.strftime("%Y-%m-%d")
+    end_time = cur_time.strftime("%H:%M:%S")
+    cur_hour = int(cur_time.strftime("%H"))
+    cur_min = int(cur_time.strftime("%M"))
+    cur_sec = int(cur_time.strftime("%S"))
+    new_min, new_hour = subtractFiveMins(cur_min, cur_hour)
+    if new_min < 10:
+        new_min = f"0{new_min}"
+    if new_hour < 10:
+        new_hour = f"0{new_hour}"
+    if cur_sec < 10:
+        cur_sec = f"0{cur_sec}"
+    if cur_hour < 10:
+        cur_hour = f"0{cur_hour}"
+    if cur_min < 10:
+        cur_min = f"0{cur_min}"
+    start_time_string = f"{date}T{new_hour}:{new_min}:{cur_sec}"
+    end_time_string = f"{date}T{cur_hour}:{cur_min}:{cur_sec}"
+    print(start_time_string)
+    print(end_time_string)
+    quit(1)
+    request_string = f"/v2/users/self/egvs?startDate={start_time_string}&endDate={end_time_string}"
+    
+    conn.request("GET", request_string, headers=headers)
+
+    res = conn.getresponse()
+    data = res.read()
+
+    print(data.decode("utf-8"))
+
+############################### BLOCK 1 #####################################
+# import http.client
+# #import json
+
+# conn = http.client.HTTPSConnection("api.dexcom.com")
+# code = 'e1782f6c49e9e3b7a09f66c98970186b'
+# REFRESH_TOKEN = "c8337e1283a76142064b7b1e438b6c9a"
+# payload = f"client_secret=bjoJIHOwF4jR525s&client_id=hsOlzVkz9o18qgCxe6Gji6HEryLOUrpF&code={code}&grant_type=authorization_code&redirect_uri=http://localhost:8080/"
+
+# headers = {
+#     'content-type': "application/x-www-form-urlencoded",
+#     'cache-control': "no-cache"
+#     }
+
+# conn.request("POST", "/v2/oauth2/token", payload, headers)
+
+# res = conn.getresponse()
+# data = res.read()
+
+# raw_json = data.decode("utf-8")
+# print(raw_json)
+#################################################################################
+#https://api.dexcom.com/v2/oauth2/login?client_id=hsOlzVkz9o18qgCxe6Gji6HEryLOUrpF&redirect_uri=http://localhost:8080/&response_type=code&scope=offline_access
+
+#access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6ImZGT0JuMDZOcmZvamdxTEdJOXBXNUJaM2J6NCIsImtpZCI6ImZGT0JuMDZOcmZvamdxTEdJOXBXNUJaM2J6NCJ9.eyJpc3MiOiJodHRwczovL3VhbTEuZGV4Y29tLmNvbS9pZGVudGl0eSIsImF1ZCI6Imh0dHBzOi8vdWFtMS5kZXhjb20uY29tL2lkZW50aXR5L3Jlc291cmNlcyIsImV4cCI6MTY2NTY5MzE5OSwibmJmIjoxNjY1Njg1OTk5LCJjbGllbnRfaWQiOiJoc09selZrejlvMThxZ0N4ZTZHamk2SEVyeUxPVXJwRiIsInNjb3BlIjpbImNhbGlicmF0aW9uIiwiZXZlbnQiLCJvZmZsaW5lX2FjY2VzcyIsImVndiIsInN0YXRpc3RpY3MiLCJkZXZpY2UiXSwic3ViIjoiZGM3ZjVjMmItYTVmOC00NzRkLTk0NGEtZDdjMmM0ZDFhODBiIiwiYXV0aF90aW1lIjoxNjY1Njg1OTQxLCJpZHAiOiJpZHNydiIsImNvdW50cnlfY29kZSI6IlVTIiwibWlzc2luZ19maWVsZHNfY291bnQiOiIwIiwiaXNfY29uc2VudF9yZXF1aXJlZCI6ImZhbHNlIiwiY25zdCI6IjIiLCJjbnN0X2NsYXJpdHkiOiIyIiwiY25zdF90ZWNoc3VwcG9ydCI6IjIiLCJqdGkiOiJlYjVjYWU4ZmFlY2Y1ZjczNjJhNDI2ZDJmNGE0ZDU1ZCIsImFtciI6WyJwYXNzd29yZCJdfQ.hkcNYaIEuT9LkNsyqv8Aq5h0By3aqTFfuUSHSnyRyjheCc5vrBfEotfvHK9B_VIBrksPl_uqgfE6x1_4xJJkGPn57grI7D9V0qqEKuC8lSMCKNKKN8lFvxjJQYv1KDe0J4S5Y98WmOBzwnLPPFiWHi3GHubFoWqBfeKJBXTxc9oZOhzPQcKk5lJbOtsRS1tRdHFJY-pqbw3DE3deE5CJUK7_EXcZvzmi9IX1Ezryt0B_nkMrFizsC-ZA6qCxGwQjE5CkZ-3JeNxn3sgeMcwxdP-hcpPzLqlVD9AR0kKm04c9QQeXi5xvFLaaV2Fq7T9Bs2epNYouW9MmpKDxWWEsKA"
+#getCurrentBloodSugar(access_tok=access_token)
