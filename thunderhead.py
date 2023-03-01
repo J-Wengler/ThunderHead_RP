@@ -54,8 +54,8 @@ class ThunderHead:
         conn = http.client.HTTPSConnection("api.pushover.net:443")
         conn.request("POST", "/1/messages.json",
         urllib.parse.urlencode({
-            "token": "a7hxahk94ajn8tyt5y13wnq4dwia1t",
-            "user": "u39yretpf7kpu775jm8djwey42t8jh",
+            "token": "PUSHOVERTOKEN",
+            "user": "PUSHOVERUSER",
             "title": title,
             "message": f"{message}",
         }), { "Content-type": "application/x-www-form-urlencoded" })
