@@ -79,12 +79,13 @@ class ThunderHead:
             print(error_str)
 
     def watch_efficient(self):
-        self.send_message(message = "Starting (test) watch...", title = "ThunderHead Test")
+        self.send_message(message = "Starting watch...", title = "ThunderHead Start")
         #Start infinite loop
         while True:
             bgvs = self.dexcom.get_glucose_readings(minutes=20, max_count=4)
             self.check_once(bgvs)
-            quit(1)
+            time.sleep(300)
+
 
     def check_once(self, bgvs):
         can_check = True
@@ -171,13 +172,14 @@ class ThunderHead:
         if predicted_bg <= self.low:
             message = f"Current Glucose: {current_bg} \nPredicted Glucose (15mins): {predicted_bg}\nAverage Fall: {slope}"
             self.send_message(message=message, title= "LOW PREDICTED")
-            self.change_bulb('l')
+            #self.change_bulb('l')
         elif predicted_bg >= self.high:
             message = f"Current Glucose: {current_bg} \nPredicted Glucose (15mins): {predicted_bg}\nAverage Rise: {slope}"
             self.send_message(message=message, title= "HIGH PREDICTED")
-            self.change_bulb('h')
+            #self.change_bulb('h')
         else:
-            self.change_bulb('n')
+            placeholder = "needtofixthis"
+            #self.change_bulb('n')
 
 
     # gets the current bg and old blood glucose to calculate change in order to potentially send an alert
