@@ -1,7 +1,7 @@
 from thunderhead import ThunderHead
 import http.client, urllib
 
-thunder = ThunderHead("DEXCOMUSER", "DEXCOMPASS", change = -30, low = 60, high = 260)
+thunder = ThunderHead("DEXCOMUSER", "DEXCOMPASS", low = 60, high = 260)
 try:
     thunder.watch()
 except Exception as e:

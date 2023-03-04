@@ -10,14 +10,13 @@ class ThunderHead:
     # password = dexcom password
     # change = the threshold for change between concurrent blood glucose levels that you want to prompt an alert
     # low = the low threshold below which you want to be alerted
-    def __init__(self, username: str, password: str, change, low, high):
+    def __init__(self, username: str, password: str, low, high):
         self.username = username
         self.password = password
         self.conn = None
         self.dexcom = None
         self.bgvs = []
         self.slopes = []
-        self.change = change
         self.low = low
         self.high = high
         self.time_passed = 0
