@@ -38,8 +38,8 @@ class ThunderHead:
         conn = http.client.HTTPSConnection("api.pushover.net:443")
         conn.request("POST", "/1/messages.json",
         urllib.parse.urlencode({
-            "token": "a7hxahk94ajn8tyt5y13wnq4dwia1t",
-            "user": "u39yretpf7kpu775jm8djwey42t8jh",
+            "token": "PUSHOVERTOKER",
+            "user": "PUSHOVERUSER",
             "title": title,
             "message": f"{message}",
         }), { "Content-type": "application/x-www-form-urlencoded" })
@@ -48,9 +48,14 @@ class ThunderHead:
     # Gets a blood sugar reading every 5 minutes and checks to see if an alert is warranted
     def watch(self):
         self.send_message(message = "ThunderHead_RP Server Started", title = "ThunderHead_RP Notification")
+        time_passed = 0
         while True:
             self.check()
-            time.sleep(5)
+            time.sleep(300)
+            time_passed = time_passed + 5
+            if time_passed >= 180:
+                self.send_message("ThunderHead_RP is running", title="ThunderHead_RP Status")
+                time_passed = 0
 
     def check(self):
         bgvs = self.dexcom.get_glucose_readings(minutes=20, max_count= 4)
